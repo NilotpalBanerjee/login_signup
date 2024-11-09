@@ -5,11 +5,12 @@ import axios from 'axios';
 
 function Login() {
   const [values, setValues] = useState({
-    email: '',
+    email_or_mobile: '',
     password: ''
   });
   const navigate = useNavigate();
   const [errors, setErrors] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleInput = (event) => {
     const { name, value } = event.target;
@@ -18,19 +19,18 @@ function Login() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setErrors(Validation(values));
-    if(errors.email === "" && errors.password === ""){
+    const validationErrors = Validation(values);
+    setErrors(validationErrors);
+    if (!validationErrors.email && !validationErrors.mobile_no && !validationErrors.password) {
       axios.post('http://localhost:4000', values)
-      .then(
-        res => {
-          if (res.data === 'Success'){
+        .then((res) => {
+          if (res.data === 'Success') {
             navigate('/home');
           } else {
             alert('No records found');
           }
-        }
-      )
-      .catch(err => console.error(err));
+        })
+        .catch((err) => console.error(err));
     }
   };
 
@@ -42,27 +42,35 @@ function Login() {
             <h4 className="text-center mb-4">Login</h4>
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
-                <label htmlFor="email" className="form-label">Email address</label>
+                <label htmlFor="email_or_mobile" className="form-label">Email address / Mobile no</label>
                 <input
-                  type="email"
+                  type="text"
                   className="form-control"
-                  name="email"
-                  placeholder="Enter email"
-                  value={values.email}
+                  name="email_or_mobile"
+                  placeholder="Enter email or mobile no"
+                  value={values.email_or_mobile}
                   onChange={handleInput}
                 />
-                {errors.email && <span className="text-danger">{errors.email}</span>}
+                {(errors.email || errors.mobile_no) && <span className="text-danger">{errors.email || errors.mobile_no}</span>}
               </div>
               <div className="mb-3">
                 <label htmlFor="password" className="form-label">Password</label>
-                <input
-                  type="password"
-                  className="form-control"
-                  name="password"
-                  placeholder="Password"
-                  value={values.password}
-                  onChange={handleInput}
-                />
+                <div className="d-flex">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    className="form-control w-75"
+                    name="password"
+                    placeholder="Password"
+                    onChange={handleInput}
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-default border btn-sm w-25"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? "Hide" : "Show"}
+                  </button>
+                </div>
                 {errors.password && <span className="text-danger">{errors.password}</span>}
               </div>
               <div className="d-grid gap-2">

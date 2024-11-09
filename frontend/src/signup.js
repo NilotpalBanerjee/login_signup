@@ -5,12 +5,13 @@ import axios from 'axios';
 function Signup() {
   const [values, setValues] = useState({
     full_name: '',
+    mobile_no: '',
     email: '',
     password: ''
   });
   const navigate = useNavigate();
   const [errors, setErrors] = useState({});
-
+  const [showPassword, setShowPassword] = useState(false);
   const handleInput = (event) => {
     const { name, value } = event.target;
     setValues((prev) => ({ ...prev, [name]: value }));
@@ -19,7 +20,7 @@ function Signup() {
   const handleSubmit = (event) => {
     event.preventDefault();
     setErrors(Validation(values));
-    if(errors.full_name === "" && errors.email === "" && errors.password === ""){
+    if(errors.full_name === "" && errors.mobile_no ==="" && errors.email === "" && errors.password === ""){
       axios.post('http://localhost:4000/signup', values)
       .then(
         res => {
@@ -50,6 +51,18 @@ function Signup() {
                 {errors.full_name && <span className="text-danger">{errors.full_name}</span>}
               </div>
               <div className="mb-3">
+                <label htmlFor="mobile_no" className="form-label">Mobile No</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="mobile_no"
+                  maxLength="10"
+                  placeholder="Enter mobile no"
+                  onChange={handleInput}
+                />
+                {errors.mobile_no && <span className="text-danger">{errors.mobile_no}</span>}
+              </div>
+              <div className="mb-3">
                 <label htmlFor="email" className="form-label">Email address</label>
                 <input
                   type="email"
@@ -62,13 +75,22 @@ function Signup() {
               </div>
               <div className="mb-3">
                 <label htmlFor="password" className="form-label">Password</label>
-                <input
-                  type="password"
-                  className="form-control"
-                  name="password"
-                  placeholder="Password"
-                  onChange={handleInput}
-                />
+                <div className="d-flex">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    className="form-control w-75"
+                    name="password"
+                    placeholder="Password"
+                    onChange={handleInput}
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-default border btn-sm w-25"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? "Hide" : "Show"}
+                  </button>
+                </div>
                 {errors.password && <span className="text-danger">{errors.password}</span>}
               </div>
               <div className="d-grid gap-2">

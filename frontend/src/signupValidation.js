@@ -3,11 +3,20 @@ function Validation(values) {
 
     const email_pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // fixed regex for email pattern
     const password_pattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9]{8,}$/; // fixed regex for password pattern
+    const mobile_pattern = /^[6-9]\d{9}$/;
 
     if (values.full_name === "") {
         error.full_name = "Full name should not be empty";
     } else {
         error.full_name = "";
+    }
+
+    if(values.mobile_no === "") {  
+        error.mobile_no = "Mobile number should not be empty";
+    } else if(!mobile_pattern.test(values.mobile_no)){
+        error.mobile_no = "Invalid mobile number";
+    }else{
+        error.mobile_no = "";
     }
 
     if (values.email === "") {

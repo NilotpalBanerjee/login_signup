@@ -1,6 +1,7 @@
 const express = require('express');
-const mysql = require('mysql2'); // Use `mysql2` instead of `mysqli`
+const mysql = require('mysql2');
 const cors = require('cors');
+
 
 const app = express();
 app.use(cors());
@@ -23,11 +24,12 @@ db.connect((err) => {
     console.log('Connected to the database');
 });
 
-// Signup route
+
 app.post('/signup', (req, res) => {
-    const sql = "INSERT INTO login (`full_name`, `email`, `password`) VALUES (?)";
+    const sql = "INSERT INTO login (`full_name`, `mobile_no`, `email`, `password`) VALUES (?)";
     const values = [
         req.body.full_name,
+        req.body.mobile_no,
         req.body.email,
         req.body.password
     ];
@@ -39,19 +41,24 @@ app.post('/signup', (req, res) => {
         return res.json(data);
     });
 });
-app.post('/', (req, res) => {
-    const sql = "SELECT * FROM login WHERE `email` = ? AND `password` = ?";
-    db.query(sql, [req.body.email, req.body.password], (err, data) => {
-        if (err) {
-            return res.json("error");
-        } if(data.length > 0){
-            return res.json("Success");
 
-        } else{
+app.post('/', (req, res) => {
+    const { email_or_mobile, password } = req.body;
+    const sql = "SELECT * FROM login WHERE (`email` = ? OR `mobile_no` = ?) AND `password` = ?";
+    db.query(sql, [email_or_mobile, email_or_mobile, password], (err, data) => {
+        if (err) {
+            console.error('Error executing query:', err);
+            return res.json("error");
+        }
+
+        if (data.length > 0) {
+            return res.json("Success");
+        } else {
             return res.json("Failed");
         }
     });
 });
+
 
 // Start server
 app.listen(4000, () => {
