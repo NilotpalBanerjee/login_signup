@@ -25,14 +25,21 @@ function Login() {
       axios.post('http://localhost:4000', values)
         .then((res) => {
           if (res.data === 'Success') {
+            localStorage.setItem('isLoggedIn', 'true');
             navigate('/home');
           } else {
             alert('No records found');
           }
         })
-        .catch((err) => console.error(err));
+        .catch((err) => {
+          console.error(err);
+          alert('An error occurred. Please try again.');
+        });
+    } else {
+      alert('Please fill in all required fields.');
     }
   };
+  
 
   return (
     <div className="container mt-5">

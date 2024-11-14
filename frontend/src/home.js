@@ -1,12 +1,27 @@
-import React from 'react'
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
-function home() {
+function Home() {
+  const navigate = useNavigate();
+
+  const logout = () => {
+    localStorage.setItem('isLoggedIn', 'false');
+    navigate('/');
+  };
+
   return (
-    <div>
-        <h3>Welcome to the Home Page!</h3>
-        <p>This is a simple React application with a Home page.</p>
+    <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
+      <div className="card shadow">
+        <div className="card-body text-center">
+          <h3 className="card-title mb-3 text-primary">Welcome to the Home Page!</h3>
+          <p className="card-text mb-4">This is a simple React application with a Home page.</p>
+          <button type="button" className="btn btn-primary" onClick={logout}>
+            Logout
+          </button>
+        </div>
+      </div>
     </div>
-  )
+  );
 }
 
-export default home
+export default Home;
