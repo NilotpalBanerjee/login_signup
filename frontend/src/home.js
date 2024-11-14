@@ -1,12 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function Home() {
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    if (isLoggedIn !== 'true') {
+      navigate('/'); // Redirect to login if not logged in
+    }
+  }, [navigate]);
+
   const logout = () => {
     localStorage.setItem('isLoggedIn', 'false');
-    navigate('/');
+    navigate('/'); // Navigate to login on logout
   };
 
   return (
